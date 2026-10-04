@@ -17,6 +17,7 @@
         app:layout_constraintBottom_toBottomOf="@id/barrier_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/ic_netology_48dp"
         tools:src="@sample/post_avatars" />
 
     <TextView
@@ -101,7 +102,7 @@
         android:id="@+id/like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="2"
+        android:ems="4"
         android:gravity="start"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="@id/like"
@@ -124,7 +125,7 @@
         android:id="@+id/share_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="2"
+        android:ems="4"
         android:gravity="start"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="@id/like"
@@ -147,7 +148,7 @@
         android:id="@+id/view_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="2"
+        android:ems="4"
         android:gravity="start"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="@id/like"
