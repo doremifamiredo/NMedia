@@ -7,9 +7,9 @@ data class Post(
     val author: String,
     val content: String,
     val published: String,
-    var likes: Int = Random.nextInt(0, 2_000_000),
-    var likedByMe: Boolean = false,
-    var shares: Int = Random.nextInt(0, 2_000_000),
-    var views: Int = Random.nextInt(0, 2_000_000)
+    val likes: Int = Random.nextInt(0, 999),
+    val likedByMe: Boolean = false,
+    val shares: Int = Random.nextInt(0, 2_000_000),
+    val views: Int = Random.nextInt(0, 2_000_000)
 )
 
