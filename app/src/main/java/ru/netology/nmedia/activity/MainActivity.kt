@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import ru.netology.nmedia.R
+import ru.netology.nmedia.adapter.OnLikeListener
+import ru.netology.nmedia.adapter.OnShareListener
+import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
-import ru.netology.nmedia.formatCount
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -17,16 +20,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val binding = ActivityMainBinding.inflate(layoutInflater)
-        viewModel.data.observe(this) { post ->
-            binding.author.text = post.author
-            binding.published.text = post.published
-            binding.content.text = post.content
-            binding.likeCount.text = formatCount(post.likes)
-            binding.shareCount.text = formatCount(post.shares)
-            binding.like.setImageResource(
-                if (post.likedByMe) R.drawable.ic_liked_24
-                else R.drawable.outline_favorite_24)
-            binding.viewCount.text = formatCount(post.views)
+        val adapter = PostAdapter(object : OnLikeListener {
+            override fun onLike(post: Post) = viewModel.like(post.id)
+        }, object : OnShareListener {
+            override fun onShare(post: Post) = viewModel.share(post.id)
+        })
+        binding.posts.adapter = adapter
+        viewModel.data.observe(this) { posts ->
+            adapter.submitList(posts)
         }
         setContentView(binding.root)
         val offset = resources.getDimensionPixelSize(R.dimen.common_spacing)
@@ -41,13 +42,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        with(binding) {
-            like.setOnClickListener {
-                viewModel.like()
-            }
-            share.setOnClickListener {
-                viewModel.share()
-            }
-        }
+
     }
 }
