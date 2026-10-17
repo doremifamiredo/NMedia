@@ -7,4 +7,12 @@
     <string name="like">Нравится</string>
     <string name="share">Поделиться</string>
     <string name="view">Просмотры</string>
+    <string name="remove">Удалить</string>
+    <string name="new_post">Новый пост</string>
+    <string name="send">Отправить</string>
+    <string name="unknown_author">Неизвестный автор</string>
+    <string name="edit">Редактировать</string>
+    <string name="cancel_edit">Отменить редактирование</string>
+    <string name="report">Пожаловаться</string>
+    <string name="edit_label">Редактирование</string>
 </resources>
