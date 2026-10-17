@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.adapter
 
 fun formatCount(count: Int): String {
     val number = count.toString()
