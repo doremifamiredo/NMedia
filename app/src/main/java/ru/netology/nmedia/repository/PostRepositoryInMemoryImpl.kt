@@ -8,8 +8,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
     private var posts = listOf(
         Post(
             id = 1,
-            author = "Нетология",
-            content = "Привет! Это первый пост в нашей новой ленте 🚀",
+            authorId = 7,
+            content = "Не люблю недосказанность. Всегда оставляю ощущение, что вот-вот что-то разрешится...",
             published = "Сегодня в 12:30",
             likes = 12,
             shares = 3,
@@ -17,8 +17,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 2,
-            author = "Александр",
-            content = "Сегодня разобрался с RecyclerView. Теперь осталось понять, куда исчезают ViewHolder при прокрутке 😄",
+            authorId = 6,
+            content = "Говорят, я звучу романтично. А я просто стараюсь поддерживать гармоничные отношения.",
             published = "Сегодня в 11:15",
             likes = 125,
             shares = 18,
@@ -27,8 +27,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 3,
-            author = "Мария",
-            content = "Kotlin становится всё интереснее! Особенно после Java.",
+            authorId = 3,
+            content = "Опять все спорят, мажор я или минор. А можно мне просто побыть собой?.",
             published = "Вчера в 20:45",
             likes = 999,
             shares = 42,
@@ -36,8 +36,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 4,
-            author = "Android Developers",
-            content = "Небольшой совет: не забывайте проверять поведение интерфейса при прокрутке длинных списков.",
+            authorId = 7,
+            content = "Психолог сказал, что мне нужно научиться отпускать напряжение. Кажется, он намекает на тонику.",
             published = "Вчера в 18:20",
             likes = 1000,
             shares = 125,
@@ -45,8 +45,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 5,
-            author = "QA Engineer",
-            content = "Нашёл баг, написал тест, исправил баг, сломал другой тест. Обычный вторник.",
+            authorId = 2,
+            content = "Соседи жалуются, что мы слишком близко друг к другу живём. Особенно когда начинаем звучать одновременно.",
             published = "8 октября в 14:10",
             likes = 2450,
             shares = 320,
@@ -55,8 +55,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 6,
-            author = "Екатерина",
-            content = "Кто-нибудь знает, почему код начинает работать сразу после того, как попросишь коллегу посмотреть?",
+            authorId = 1,
+            content = "Не понимаю, зачем искать вторую половинку, если можно прекрасно звучать в унисон с собой.",
             published = "7 октября в 09:30",
             likes = 543,
             shares = 67,
@@ -64,8 +64,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 7,
-            author = "Нетология",
-            content = "Сегодня изучаем ListAdapter и DiffUtil. Обновляем только то, что действительно изменилось!",
+            authorId = 4,
+            content = "Все восхищаются Квинтой, а кто-нибудь вообще помнит, что я тоже чистая?",
             published = "6 октября в 16:00",
             likes = 10000,
             shares = 1500,
@@ -73,8 +73,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 8,
-            author = "Дмитрий",
-            content = "Когда приложение собирается с первого раза, начинаешь подозревать, что что-то забыл.",
+            authorId = 8,
+            content = "Сегодня встретила человека, с которым мы абсолютно одинаковые. Только он на восемь ступеней ниже.",
             published = "5 октября в 21:40",
             likes = 87,
             shares = 5,
@@ -83,8 +83,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 9,
-            author = "Mobile Testing",
-            content = "Автоматизация тестирования Android — это когда Espresso знает твой интерфейс лучше тебя.",
+            authorId = 5,
+            content = "Стабильность — моё второе имя. Если нужен надёжный фундамент для гармонии, обращайтесь.",
             published = "4 октября в 13:25",
             likes = 3200,
             shares = 450,
@@ -92,8 +92,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = 10,
-            author = "Олег",
-            content = "RecyclerView работает, лайки переключаются, репосты считаются. Похоже, домашка почти готова! 🎉",
+            authorId = 4,
+            content = "Меня сегодня назвали тритоном. Всего полтона разницы, а репутация уже испорчена!",
             published = "Сегодня в 14:00",
             likes = 0,
             shares = 0,
@@ -101,7 +101,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
         )
     )
     private val data = MutableLiveData(posts)
-
+    private var nextId = 11L
     override fun get(): LiveData<List<Post>> = data
 
     override fun like(id: Long) {
@@ -126,6 +126,26 @@ class PostRepositoryInMemoryImpl : PostRepository {
                 )
             } else {
                 post
+            }
+        }
+        data.value = posts
+    }
+
+    override fun remove(id: Long) {
+        posts = posts.filter { it.id != id }
+        data.value = posts
+    }
+
+    override fun save(post: Post) {
+        if (post.id == 0L) {
+            posts = listOf(post.copy(id = nextId++)) + posts
+        } else {
+            posts = posts.map {
+                if (it.id == post.id) {
+                    it.copy(content = post.content)
+                } else {
+                    it
+                }
             }
         }
         data.value = posts

@@ -6,4 +6,12 @@
     <string name="like">like</string>
     <string name="share">share</string>
     <string name="view">view</string>
+    <string name="remove">Remove</string>
+    <string name="new_post">New post</string>
+    <string name="send">Send</string>
+    <string name="unknown_author">Unknow author</string>
+    <string name="edit">Edit</string>
+    <string name="cancel_edit">Cancel edit</string>
+    <string name="report">Report</string>
+    <string name="edit_label">Edit</string>
 </resources>
