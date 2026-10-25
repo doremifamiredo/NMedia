@@ -8,12 +8,14 @@ class PostRepositoryInMemoryImpl : PostRepository {
     private var posts = listOf(
         Post(
             id = 1,
-            authorId = 7,
-            content = "Не люблю недосказанность. Всегда оставляю ощущение, что вот-вот что-то разрешится...",
-            published = "Сегодня в 12:30",
-            likes = 12,
-            shares = 3,
-            views = 245
+            authorId = 0,
+            content = "Олег и Фречча",
+            video = "https://rutube.ru/video/private/c2d9c65177e986ac66f62ec0a5624227/?p=Slg9XlxKdWTkcxWJd_jl1g",
+            published = "22.12.1991",
+            likes = 24,
+            shares = 999,
+            views = 2020,
+            likedByMe = false
         ),
         Post(
             id = 2,
@@ -98,10 +100,19 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likes = 0,
             shares = 0,
             views = 1
-        )
+        ),
+        Post(
+            id = 11,
+            authorId = 7,
+            content = "Не люблю недосказанность. Всегда оставляю ощущение, что вот-вот что-то разрешится...",
+            published = "Сегодня в 12:30",
+            likes = 12,
+            shares = 3,
+            views = 245
+        ),
     )
     private val data = MutableLiveData(posts)
-    private var nextId = 11L
+    private var nextId = 12L
     override fun get(): LiveData<List<Post>> = data
 
     override fun like(id: Long) {

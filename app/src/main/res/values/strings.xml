@@ -14,4 +14,9 @@
     <string name="cancel_edit">Cancel edit</string>
     <string name="report">Report</string>
     <string name="edit_label">Edit</string>
+    <string name="save">Save</string>
+    <string name="error_empty_post">Post content cannot be empty</string>
+    <string name="video_preview">video</string>
+    <string name="play_video">Play video</string>
+    <string name="error_open_video">Can\'t open this video</string>
 </resources>
