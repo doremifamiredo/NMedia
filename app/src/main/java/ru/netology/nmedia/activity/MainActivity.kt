@@ -1,14 +1,16 @@
 package ru.netology.nmedia.activity
 
-import android.content.Context
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import ru.netology.nmedia.R
@@ -24,12 +26,36 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val binding = ActivityMainBinding.inflate(layoutInflater)
+        val postEditorLauncher =
+            registerForActivityResult(PostEditorResultContract) { content ->
+                if (content == null) {
+                    viewModel.cancelEdit()
+                    return@registerForActivityResult
+                }
+                viewModel.save(content)
+            }
+        binding.fab.setOnClickListener {
+            postEditorLauncher.launch(null)
+        }
         val adapter = PostAdapter(
             onInteractionListener = object : OnInteractionListener {
                 override fun onLike(post: Post) = viewModel.like(post.id)
                 override fun onShare(post: Post) = viewModel.share(post.id)
                 override fun onRemove(post: Post) = viewModel.remove(post)
-                override fun onEdit(post: Post) = viewModel.edit(post)
+                override fun onEdit(post: Post) {
+                    viewModel.edit(post)
+                    postEditorLauncher.launch(post.content)
+                }
+
+                override fun onVideo(post: Post) {
+                    if (post.video.isNullOrBlank()) return
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW, post.video.toUri()))
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(this@MainActivity,
+                            R.string.error_open_video, Toast.LENGTH_SHORT).show()
+                    }
+                }
             },
             users = viewModel.users,
             getCurrentUserId = { viewModel.currentUser.value?.id }
@@ -59,24 +85,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                     }
                 }
-            send.setOnClickListener {
-                val newContent = newPostContent.text.trim().toString()
-                if (newContent.isNotEmpty()) {
-                    viewModel.save(newContent)
-                    newPostContent.setText("")
-                    val inputMethodManager =
-                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.hideSoftInputFromWindow(
-                        newPostContent.windowToken,
-                        0
-                    )
-                    newPostContent.clearFocus()
-                }
-            }
             posts.adapter = adapter
-            cancelEdit.setOnClickListener {
-                viewModel.cancelEdit()
-            }
         }
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
@@ -84,13 +93,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.edited.observe(this) { post ->
             with(binding) {
                 userSpinner.isEnabled = post == null
-                if (post != null) {
-                    newPostContent.setText(post.content)
-                    editGroup.visibility = View.VISIBLE
-                } else {
-                    newPostContent.setText("")
-                    editGroup.visibility = View.GONE
-                }
             }
         }
         setContentView(binding.root)

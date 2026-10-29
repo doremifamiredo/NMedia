@@ -73,18 +73,45 @@
         android:layout_marginTop="@dimen/common_spacing"
         android:layout_marginBottom="@dimen/common_spacing"
         android:autoLink="web"
-        app:layout_constraintBottom_toTopOf="@id/barrier_footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_header"
         tools:text="@sample/posts.json/data/content" />
+
+    <FrameLayout
+        android:id="@+id/video_container"
+        android:layout_width="0dp"
+        android:layout_height="180dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/video_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/video_preview"
+            android:src="@drawable/video_preview" />
+
+        <ImageView
+            android:id="@+id/video_play"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_play_24"
+            android:contentDescription="@string/play_video" />
+
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_footer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="content" />
+        app:constraint_referenced_ids="content,video_container"
+        app:barrierAllowsGoneWidgets="false" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/like"

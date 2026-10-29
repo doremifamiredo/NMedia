@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter
 class PostViewModel : ViewModel() {
     private val repository: PostRepository = PostRepositoryInMemoryImpl()
     val users = listOf(
+        User(0L, "Ollegro"),
         User(1L, "Прима"),
         User(2L, "Секунда"),
         User(3L, "Терция"),
@@ -46,6 +47,7 @@ class PostViewModel : ViewModel() {
                 0L,
                 currentUser.value?.id ?: return,
                 content,
+                null,
                 LocalDateTime.now().format(
                     DateTimeFormatter.ofPattern("dd.MM.yyyy 'в' HH:mm")
                 )

@@ -15,4 +15,9 @@
     <string name="cancel_edit">Отменить редактирование</string>
     <string name="report">Пожаловаться</string>
     <string name="edit_label">Редактирование</string>
+    <string name="save">Готово</string>
+    <string name="error_empty_post">Содержание поста не может быть пустым</string>
+    <string name="video_preview">Видео</string>
+    <string name="play_video">Воспроизвести видео</string>
+    <string name="error_open_video">Не удаётся открыть это видео</string>
 </resources>
