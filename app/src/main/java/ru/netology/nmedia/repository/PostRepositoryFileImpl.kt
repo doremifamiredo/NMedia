@@ -1,10 +1,18 @@
 package ru.netology.nmedia.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import ru.netology.nmedia.dto.Post
+import com.google.gson.reflect.TypeToken
 
-class PostRepositoryInMemoryImpl : PostRepository {
+class PostRepositoryFileImpl(
+    private val context: Context
+) : PostRepository {
+    private val file = context.filesDir.resolve("posts.json")
+    private val gson = Gson()
+    private val postsType = object : TypeToken<List<Post>>() {}.type
     private var posts = listOf(
         Post(
             id = 1,
@@ -113,10 +121,22 @@ class PostRepositoryInMemoryImpl : PostRepository {
     )
     private val data = MutableLiveData(posts)
     private var nextId = 12L
+
+    init {
+        if (file.exists()) {
+            val json = file.readText()
+            posts = gson.fromJson(json, postsType)
+            data.value = posts
+        } else {
+            sync()
+        }
+        nextId = (posts.maxOfOrNull { it.id } ?: 0L) + 1
+    }
+
     override fun get(): LiveData<List<Post>> = data
 
     override fun like(id: Long) {
-        posts = posts.map { post ->
+        updatePosts(posts.map { post ->
             if (post.id == id) {
                 post.copy(
                     likedByMe = !post.likedByMe,
@@ -125,12 +145,11 @@ class PostRepositoryInMemoryImpl : PostRepository {
             } else {
                 post
             }
-        }
-        data.value = posts
+        })
     }
 
     override fun share(id: Long) {
-        posts = posts.map { post ->
+        updatePosts(posts.map { post ->
             if (post.id == id) {
                 post.copy(
                     shares = post.shares + 1
@@ -138,20 +157,18 @@ class PostRepositoryInMemoryImpl : PostRepository {
             } else {
                 post
             }
-        }
-        data.value = posts
+        })
     }
 
     override fun remove(id: Long) {
-        posts = posts.filter { it.id != id }
-        data.value = posts
+        updatePosts(posts.filter { it.id != id })
     }
 
     override fun save(post: Post) {
-        if (post.id == 0L) {
-            posts = listOf(post.copy(id = nextId++)) + posts
+        val updatedPosts = if (post.id == 0L) {
+            listOf(post.copy(id = nextId++)) + posts
         } else {
-            posts = posts.map {
+            posts.map {
                 if (it.id == post.id) {
                     it.copy(content = post.content)
                 } else {
@@ -159,6 +176,18 @@ class PostRepositoryInMemoryImpl : PostRepository {
                 }
             }
         }
+
+        updatePosts(updatedPosts)
+    }
+
+    private fun updatePosts(newPosts: List<Post>) {
+        posts = newPosts
+        sync()
         data.value = posts
+    }
+
+    private fun sync() {
+        val json = gson.toJson(posts)
+        file.writeText(json)
     }
 }
